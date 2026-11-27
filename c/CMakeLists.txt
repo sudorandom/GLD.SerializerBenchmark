@@ -314,6 +314,20 @@ if(EXISTS ${TP}/zcbor/src/zcbor_encode.c)
   message(STATUS "serializer: zcbor REAL")
 endif()
 
+if(EXISTS ${TP}/omnibuf-nano/runtime/ob_encode.c)
+  list(APPEND BENCH_SOURCES
+    ${TP}/omnibuf-nano/runtime/ob_varint.c
+    ${TP}/omnibuf-nano/runtime/ob_encode.c
+    ${TP}/omnibuf-nano/runtime/ob_decode.c
+    src/generated/benchmark_v2.ob.c
+    src/serializers/ser_omnibuf_nano.c)
+  list(APPEND BENCH_INCLUDES
+    ${TP}/omnibuf-nano/runtime
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/generated)
+  add_compile_definitions(HAS_OMNIBUF_NANO=1)
+  message(STATUS "serializer: omnibuf-nano REAL")
+endif()
+
 add_executable(serializer_benchmark_c ${BENCH_SOURCES})
 target_include_directories(serializer_benchmark_c PRIVATE ${BENCH_INCLUDES})
 target_link_libraries(serializer_benchmark_c PRIVATE ${BENCH_LIBS})

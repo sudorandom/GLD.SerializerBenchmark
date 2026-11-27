@@ -848,7 +848,18 @@
     "swift/gld-avro": "gld-avro-swift",
     "swift/gld-ion": "gld-ion-swift",
     "zig/gld-avro": "gld-avro-zig",
-    "zig/gld-arrow": "gld-arrow-zig"
+    "zig/gld-arrow": "gld-arrow-zig",
+    "c/omnibuf-nano": "omnibuf-nano",
+    "csharp/omnibuf": "omnibuf",
+    "cpp/omnibuf": "omnibuf",
+    "go/omnibuf": "omnibuf",
+    "java/omnibuf": "omnibuf",
+    "javascript/omnibuf": "omnibuf",
+    "kotlin/omnibuf": "omnibuf",
+    "php/omnibuf": "omnibuf",
+    "python/omnibuf": "omnibuf",
+    "rust/omnibuf": "omnibuf",
+    "swift/omnibuf": "omnibuf"
   },
   "specifics": {
     "cjson": "cJSON was written as an ultralightweight JSON parser in ANSI C for embedded and application code that could not afford a heavy toolkit. The problem was that existing C JSON stacks pulled large dependencies or a C++ runtime. cJSON solves that with a single-file DOM: parse to a tree of `cJSON` nodes, mutate, and print.",
@@ -1159,7 +1170,9 @@
     "gld-avro-swift": "gld-avro-swift (leo-gan) is a pure-Swift Apache Avro binary codec that parses `.avsc` schemas in `prepare` and times `encodeGeneric` and `decodeGeneric`.",
     "gld-ion-swift": "gld-ion-swift (leo-gan) is a pure-Swift Amazon Ion 1.0 binary encoder and decoder timing `encode` and `decodeBinary`.",
     "gld-avro-zig": "gld-avro-zig (leo-gan) is a pure-Zig Apache Avro binary codec that parses `.avsc` schemas once in `prepare` and times `Datum.encodeTo` and `decodeBin`.",
-    "gld-arrow-zig": "gld-arrow-zig (leo-gan) is a pure-Zig Apache Arrow IPC stream codec supporting the five suite data types, decoding back via `rowsFromBatch`."
+    "gld-arrow-zig": "gld-arrow-zig (leo-gan) is a pure-Zig Apache Arrow IPC stream codec supporting the five suite data types, decoding back via `rowsFromBatch`.",
+    "omnibuf": "OmniBuf is a schema-driven binary wire format built for `.proto` contracts with unambiguous wire types, prefix-varint integers, and optional inline Field #0 metadata. This row benchmarks compact mode (`self_describing = false`) using static codecs generated from `schemas/v2/protobuf/benchmark_v2.proto`.",
+    "omnibuf-nano": "omnibuf-nano is the zero-malloc C99 implementation of the OmniBuf v1 wire specification for embedded and systems targets. This row runs static `protoc-gen-omnibuf-nano` descriptor tables (`ob_encode` / `ob_decode`) in compact mode directly into reusable caller buffers."
   },
   "extra": {
     "python/fory": "This row uses pyfory in native mode on registered dataclasses.",
@@ -1254,6 +1267,16 @@
     "zig/serde.json.borrowed": "Uses borrowed string views (`fromSliceBorrowed`) on decode instead of copying unescaped strings; encode uses the same comptime `toWriter` path as `serde.json`.",
     "zig/std.json.borrowed": "Uses `parseFromSliceLeaky` with `.allocate = .alloc_if_needed` so unescaped strings are decoded as borrowed slices into the input buffer rather than copied; encode matches `std.json`.",
     "python/py3amf-amf0": "Uses AMF0 (RTMP command encoding), where every number is written as an IEEE 754 double.",
-    "python/py3amf-amf3": "Uses AMF3, which encodes small integers compactly and supports reference sharing for repeated strings and objects."
+    "python/py3amf-amf3": "Uses AMF3, which encodes small integers compactly and supports reference sharing for repeated strings and objects.",
+    "go/omnibuf": "Uses generated `MarshalOmniBufAppend` / `UnmarshalOmniBuf` with buffer and target reuse; `table_project` extracts `f_float_0` via generated `OpaqueTable` / `OpaqueBatchTable` views.",
+    "rust/omnibuf": "Uses generated `encode_omnibuf_append` into the runner buffer and linear fast-path decoders; `table_project` extracts `f_float_0` via zero-unpack `OpaqueTable` / `OpaqueBatchTable`.",
+    "python/omnibuf": "Runs the Rust PyO3 `CompiledCodec` over generated slotted dataclasses.",
+    "javascript/omnibuf": "Uses `@omnibuf/node` buffer codecs with a reused `Encoder`; `table_project` extracts `f_float_0` directly via `readFloat64` / `readSubMsgArrDecoded`.",
+    "cpp/omnibuf": "Header-only C++20 runtime (`FastWriter` / `unmarshal_omnibuf`); `table_project` extracts `f_float_0` directly from wire bytes.",
+    "java/omnibuf": "Uses generated Java 21 static codecs with a reused `OmniBufEncoder` and decode target; `table_project` reads `f_float_0` via `OpaqueTable` / `OpaqueBatchTable`.",
+    "kotlin/omnibuf": "Calls `com.omnibuf:omnibuf-java` generated codecs from Kotlin/JVM with reused `OmniBufEncoder` and `OpaqueTable` / `OpaqueBatchTable` projection on `table_project`.",
+    "csharp/omnibuf": "Uses generated partial-class `MarshalOmniBuf` / `ParseOmniBuf` codecs bound once in `Initialize` with a reused `OmniBufEncoder`.",
+    "swift/omnibuf": "Uses generated `@inlinable` `encodeOmniBufBody` / `mergeOmniBuf` codecs with a reused `OmniBufWriter`.",
+    "php/omnibuf": "Uses generated Tier 1 PHP message classes with a reused `Encoder` and target (`marshalTo` / `unmarshalInto`)."
   }
 }

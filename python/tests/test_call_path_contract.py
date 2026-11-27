@@ -31,6 +31,7 @@ from benchmark.serializers.json_rapidjson import RapidjsonSerializer
 from benchmark.serializers.native_cloudpickle import CloudpickleSerializer
 from benchmark.serializers.native_pickle import PickleSerializer
 from benchmark.serializers.schema_avro import AvroSerializer
+from benchmark.serializers.schema_omnibuf import OmniBufSerializer
 from benchmark.serializers.schema_protobuf import ProtobufSerializer
 
 
@@ -49,6 +50,7 @@ STRUCT_CODECS = [
 
 MESSAGE_CODECS = [
     ProtobufSerializer(),
+    OmniBufSerializer(),
 ]
 
 NATIVE_CODECS = [

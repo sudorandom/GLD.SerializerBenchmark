@@ -41,6 +41,15 @@ protoc \
   --go_opt=paths=source_relative \
   benchmark_v2.proto
 
+if command -v protoc-gen-omnibuf-go >/dev/null 2>&1; then
+  protoc \
+    --proto_path="$TMP_DIR" \
+    --omnibuf-go_out="$GO_DIR/gen/pbv2" \
+    --omnibuf-go_opt=paths=source_relative \
+    benchmark_v2.proto
+  echo "[OK] generated $GO_DIR/gen/pbv2/benchmark_v2_wire.pb.go"
+fi
+
 rm -rf "$TMP_DIR"
 echo "[OK] generated $GO_DIR/gen/pbv2/benchmark_v2.pb.go"
 ls -la "$GO_DIR/gen/pbv2/"

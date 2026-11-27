@@ -34,6 +34,7 @@ object Registry {
             Entry("kotlinx-protobuf", ::KotlinxProtobufSer),
             Entry("protobuf", ::ProtobufSer),
             Entry("protobuf-kotlin", ::ProtobufKotlinSer),
+            Entry("omnibuf", ::OmniBufSer),
             Entry("avro4k", ::Avro4kSer),
             Entry("avro", ::AvroSer),
             Entry("thrift", ::ThriftSer),

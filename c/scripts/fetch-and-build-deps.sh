@@ -47,6 +47,7 @@ download avro "https://github.com/apache/avro/archive/refs/tags/release-1.11.3.t
 download mongo-c-driver "https://github.com/mongodb/mongo-c-driver/archive/refs/tags/1.27.5.tar.gz"
 download ion-c "https://github.com/amazon-ion/ion-c/archive/refs/tags/v1.1.6.tar.gz"
 download gld-kiln-c "https://github.com/leo-gan/gld-kiln-c/archive/refs/tags/0.2.1.tar.gz"
+download omnibuf-nano "https://github.com/omnibuf/omnibuf-nano/archive/refs/tags/v0.1.3.tar.gz"
 
 echo "[build] jansson"
 mkdir -p "$TP/_build/jansson"

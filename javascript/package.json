@@ -11,7 +11,8 @@
     "generate:protobuf-es": "bash scripts/generate-protobuf-es.sh",
     "generate:google-protobuf": "bash scripts/generate-google-protobuf.sh",
     "generate:protobuf": "npm run generate:protobuf-es && npm run generate:google-protobuf",
-    "generate:dagr": "bash scripts/generate-dagr.sh"
+    "generate:dagr": "bash scripts/generate-dagr.sh",
+    "generate:omnibuf": "bash scripts/generate-omnibuf.sh"
   },
   "engines": {
     "node": ">=18"
@@ -23,6 +24,8 @@
     "@bufbuild/protoc-gen-es": "^2.12.1",
     "@jsonjoy.com/json-pack": "^18.28.0",
     "@msgpack/msgpack": "^3.0.0",
+    "@omnibuf/core": "^0.1.15",
+    "@omnibuf/node": "^0.1.15",
     "@timeleap/sia": "^2.3.0",
     "@toon-format/toon": "^4.4.0",
     "amf-codec": "^1.4.1",
@@ -50,6 +53,7 @@
     "simdjson": "^0.9.2"
   },
   "devDependencies": {
+    "@omnibuf/protoc-gen-omnibuf-es": "^0.1.15",
     "esbuild": "^0.25.12"
   },
   "overrides": {

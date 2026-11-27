@@ -234,6 +234,20 @@ set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
 set(YAML_CPP_INSTALL OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(yaml_cpp)
 
+# OmniBuf (header-only C++20; SOURCE_SUBDIR skips upstream CMakeLists.txt
+# which requires CMake 3.24 while this project targets CMake 3.16+)
+set(OMNIBUF_VERSION "0.1.7")
+FetchContent_Declare(omnibuf
+  GIT_REPOSITORY https://github.com/omnibuf/omnibuf-cpp.git
+  GIT_TAG v${OMNIBUF_VERSION}
+  GIT_SHALLOW TRUE
+  SOURCE_DIR ${CPP_TP}/omnibuf-cpp
+  SOURCE_SUBDIR include
+)
+FetchContent_MakeAvailable(omnibuf)
+add_library(omnibuf_hdr INTERFACE)
+target_include_directories(omnibuf_hdr INTERFACE ${CPP_TP}/omnibuf-cpp/include)
+
 add_library(cista_hdr INTERFACE)
 target_include_directories(cista_hdr INTERFACE ${CPP_TP}/cista/include)
 # single-header layout fallback
@@ -275,6 +289,7 @@ set(BENCH_SOURCES
   src/serializers/ser_dagr.cpp
   src/serializers/ser_highfive.cpp
   src/serializers/ser_kiln.cpp
+  src/serializers/ser_omnibuf.cpp
 )
 
 # ---- Optional: official Google libprotobuf (suite sysroot or system) ----
@@ -361,11 +376,15 @@ add_executable(serializer_benchmark_cpp ${BENCH_SOURCES})
 set_source_files_properties(src/serializers/ser_sbe.cpp PROPERTIES COMPILE_OPTIONS "-Wno-macro-redefined")
 
 target_include_directories(serializer_benchmark_cpp PRIVATE ${DAGR_GEN_INCLUDE})
-target_compile_definitions(serializer_benchmark_cpp PRIVATE DAGR_TOOL_VERSION="${DAGR_TOOL_VERSION}")
+target_compile_definitions(serializer_benchmark_cpp PRIVATE
+  DAGR_TOOL_VERSION="${DAGR_TOOL_VERSION}"
+  OMNIBUF_VERSION="${OMNIBUF_VERSION}"
+)
 target_include_directories(serializer_benchmark_cpp BEFORE PRIVATE
   ${CPP_TP}/flatbuffers/include
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/gen/sbe
+  ${CMAKE_CURRENT_SOURCE_DIR}/gen/omnibuf
   ${CPP_TP}/rapidjson/include
   ${CPP_TP}/zpp_bits
   ${CPP_TP}/msgpack-c/include
@@ -394,6 +413,7 @@ target_link_libraries(serializer_benchmark_cpp PRIVATE
   yas_hdr
   cista_hdr
   gld_kiln
+  omnibuf_hdr
   pthread
   ZLIB::ZLIB
   yaml-cpp::yaml-cpp
@@ -464,6 +484,7 @@ set(TEST_SOURCES
   src/serializers/ser_dagr.cpp
   src/serializers/ser_highfive.cpp
   src/serializers/ser_kiln.cpp
+  src/serializers/ser_omnibuf.cpp
 )
 if(BENCH_HAS_LIBPROTOBUF)
   list(APPEND TEST_SOURCES src/serializers/ser_protobuf_lib.cpp ${PB_GEN_CC})
@@ -472,11 +493,15 @@ else()
 endif()
 add_executable(cpp_serializer_tests ${TEST_SOURCES})
 target_include_directories(cpp_serializer_tests PRIVATE ${DAGR_GEN_INCLUDE})
-target_compile_definitions(cpp_serializer_tests PRIVATE DAGR_TOOL_VERSION="${DAGR_TOOL_VERSION}")
+target_compile_definitions(cpp_serializer_tests PRIVATE
+  DAGR_TOOL_VERSION="${DAGR_TOOL_VERSION}"
+  OMNIBUF_VERSION="${OMNIBUF_VERSION}"
+)
 target_include_directories(cpp_serializer_tests BEFORE PRIVATE
   ${CPP_TP}/flatbuffers/include
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/gen/sbe
+  ${CMAKE_CURRENT_SOURCE_DIR}/gen/omnibuf
   ${CPP_TP}/rapidjson/include
   ${CPP_TP}/zpp_bits
   ${CPP_TP}/msgpack-c/include
@@ -497,6 +522,7 @@ target_link_libraries(cpp_serializer_tests PRIVATE
   yas_hdr
   cista_hdr
   gld_kiln
+  omnibuf_hdr
   pthread
   ZLIB::ZLIB
   yaml-cpp::yaml-cpp

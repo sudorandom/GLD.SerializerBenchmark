@@ -19,6 +19,7 @@ Fetched by CMake `FetchContent` into `cpp/third_party/` (gitignored except this 
 | jsoncons | v0.177.0 | CBOR / BSON / MessagePack |
 | flatbuffers | v24.3.25 | FlatBuffers + FlexBuffers |
 | gld-kiln-cpp | 0.2.0 | Positional Kiln wire (`gld-kiln`) |
+| omnibuf-cpp | v0.1.7 | OmniBuf C++20 wire (`omnibuf`; codecs in `cpp/gen/omnibuf/`) |
 
 Official Protobuf C++ (local sysroot, not FetchContent):
 

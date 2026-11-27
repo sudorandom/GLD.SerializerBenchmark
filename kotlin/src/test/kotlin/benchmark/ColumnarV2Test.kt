@@ -78,7 +78,7 @@ class ColumnarV2Test {
     @Test
     fun filterAllowListPreservesRegistryOrder() {
         val names = Registry.names()
-        assertEquals(34, names.size)
+        assertEquals(35, names.size)
         assertEquals(names, Registry.select("").map { it.name() })
         val protobuf = Registry.select("protobuf").map { it.name() }
         assertTrue(protobuf.contains("protobuf"))
@@ -197,11 +197,12 @@ class ColumnarV2Test {
     companion object {
         private val TYPES = arrayOf("table", "table_project", "nested_table", "signal")
         private const val ALLOW =
-            "arrow-ipc,parquet,parquet-uncompressed,orc,orc-uncompressed,sbe,kotlinx-json,protobuf,flatbuffers,avro"
+            "arrow-ipc,parquet,parquet-uncompressed,orc,orc-uncompressed,sbe,kotlinx-json,protobuf,omnibuf,flatbuffers,avro"
         private val ALLOW_ORDER =
             listOf(
                 "kotlinx-json",
                 "protobuf",
+                "omnibuf",
                 "avro",
                 "flatbuffers",
                 "arrow-ipc",

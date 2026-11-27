@@ -83,7 +83,7 @@ func checkRoundTrip(t *testing.T, ser BenchSerializer, fx model.Fixture) {
 func TestColumnarRoundTrip(t *testing.T) {
 	names := []string{
 		"arrow-ipc", "parquet", "parquet-uncompressed", "sbe",
-		"encoding/json", "protobuf", "hamba/avro",
+		"encoding/json", "protobuf", "omnibuf", "hamba/avro",
 	}
 	byName := map[string]BenchSerializer{}
 	for _, ser := range All() {

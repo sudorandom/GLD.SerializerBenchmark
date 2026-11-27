@@ -34,6 +34,7 @@ from benchmark.serializers.columnar_arrow import (
 from benchmark.serializers.json_orjson import OrjsonSerializer
 from benchmark.serializers.schema_avro import AvroSerializer
 from benchmark.serializers.schema_flatbuffers import FlatBuffersSerializer
+from benchmark.serializers.schema_omnibuf import OmniBufSerializer
 from benchmark.serializers.schema_protobuf import ProtobufSerializer
 
 _CATALOG = load_catalog(_REPO / "schemas" / "data_catalog_v2.yaml")
@@ -48,10 +49,11 @@ _COLUMNAR = (
 _PEERS = (
     OrjsonSerializer,
     ProtobufSerializer,
+    OmniBufSerializer,
     FlatBuffersSerializer,
     AvroSerializer,
 )
-_ALLOW = "arrow-ipc,parquet,orc,orjson,protobuf,flatbuffers,avro"
+_ALLOW = "arrow-ipc,parquet,orc,orjson,protobuf,omnibuf,flatbuffers,avro"
 
 
 def _instances(type_id: str, n: int):
@@ -177,6 +179,7 @@ def test_columnar_allow_list_does_not_select_the_old_matrix():
         "orc-uncompressed",
         "orjson",
         "protobuf",
+        "omnibuf",
         "flatbuffers",
         "avro",
     }

@@ -16,6 +16,7 @@ import { toonSerializers } from './toon.js';
 import { dagrSerializers } from './dagr.js';
 import { columnarSerializers } from './columnar.js';
 import { hdf5Serializers } from './hdf5.js';
+import { omnibufSerializers } from './omnibuf.js';
 import { forySer } from './fory.js';
 
 export const ALL_SERIALIZERS = [
@@ -24,6 +25,7 @@ export const ALL_SERIALIZERS = [
   ...binarySerializers(),
   ...kilnSerializers(),
   ...schemaSerializers(),
+  ...omnibufSerializers(),
   ...nativeSerializers(),
   ...modernSerializers(),
   ...yamlSerializers(),

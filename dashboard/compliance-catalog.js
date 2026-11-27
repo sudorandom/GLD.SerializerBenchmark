@@ -451,6 +451,17 @@ export const CATALOG = [
   { language: "csharp", name: "ToonNet", formats: ["toon"], docs: "https://github.com/selcukgural/ToonNet", evidence: "ToonNet.Core: Serialize and Deserialize of a type." },
   { language: "csharp", name: "Corvus.Toon", formats: ["toon"], docs: "https://github.com/corvus-dotnet/Corvus.JsonSchema", evidence: "Corvus.Toon.SystemTextJson: ConvertToToonString and ConvertToJsonString." },
   { language: "java", name: "json-io", formats: ["toon"], docs: "https://github.com/jdereg/json-io", evidence: "json-io: JsonIo.toToon and JsonIo.fromToon. Decode returns a JSON tree." },
+  { language: "c", name: "omnibuf-nano", formats: ["omnibuf"], docs: "https://github.com/omnibuf/omnibuf-nano", evidence: "omnibuf-nano: zero-malloc C99 OmniBuf v1 runtime with protoc-gen-omnibuf-nano static descriptors. Spec: https://omnibuf.com/spec" },
+  { language: "csharp", name: "omnibuf", formats: ["omnibuf"], docs: "https://github.com/omnibuf/omnibuf-cs", evidence: "OmniBuf .NET: static protoc-gen-omnibuf-cs codecs with reused OmniBufEncoder and OmniBufSpanReader. Spec: https://omnibuf.com/spec" },
+  { language: "cpp", name: "omnibuf", formats: ["omnibuf"], docs: "https://github.com/omnibuf/omnibuf-cpp", evidence: "omnibuf-cpp: header-only C++20 OmniBuf v1 runtime with protoc-gen-omnibuf-cpp static codecs. Spec: https://omnibuf.com/spec" },
+  { language: "go", name: "omnibuf", formats: ["omnibuf"], docs: "https://github.com/omnibuf/omnibuf-go", evidence: "omnibuf-go: pure-Go OmniBuf v1 runtime with protoc-gen-omnibuf-go static codecs and Opaque views. Spec: https://omnibuf.com/spec" },
+  { language: "java", name: "omnibuf", formats: ["omnibuf"], docs: "https://github.com/omnibuf/omnibuf-java", evidence: "omnibuf-java: Java 21 OmniBuf v1 runtime with protoc-gen-omnibuf-java static codecs and Opaque views. Spec: https://omnibuf.com/spec" },
+  { language: "javascript", name: "omnibuf", formats: ["omnibuf"], docs: "https://github.com/omnibuf/omnibuf-es", evidence: "@omnibuf/core and @omnibuf/node: OmniBuf v1 runtime with @omnibuf/protoc-gen-omnibuf-es generated codecs. Spec: https://omnibuf.com/spec" },
+  { language: "kotlin", name: "omnibuf", formats: ["omnibuf"], docs: "https://github.com/omnibuf/omnibuf-java", evidence: "com.omnibuf:omnibuf-java static codecs called from Kotlin/JVM with reused OmniBufEncoder and Opaque views. Spec: https://omnibuf.com/spec" },
+  { language: "php", name: "omnibuf", formats: ["omnibuf"], docs: "https://github.com/omnibuf/omnibuf-php", evidence: "omnibuf/omnibuf: PHP 8.3+ OmniBuf v1 runtime with protoc-gen-omnibuf-php generated message classes. Spec: https://omnibuf.com/spec" },
+  { language: "python", name: "omnibuf", formats: ["omnibuf"], docs: "https://github.com/omnibuf/omnibuf-py", evidence: "omnibuf: Rust PyO3 OmniBuf v1 runtime with protoc-gen-omnibuf-py slotted dataclasses and CompiledCodec. Spec: https://omnibuf.com/spec" },
+  { language: "rust", name: "omnibuf", formats: ["omnibuf"], docs: "https://github.com/omnibuf/omnibuf-rs", evidence: "omnibuf: Rust OmniBuf v1 crate with protoc-gen-omnibuf-rs static codecs and Opaque views. Spec: https://omnibuf.com/spec" },
+  { language: "swift", name: "omnibuf", formats: ["omnibuf"], docs: "https://github.com/omnibuf/omnibuf-swift", evidence: "omnibuf-swift: Swift 6 OmniBuf v1 runtime with protoc-gen-omnibuf-swift static codecs. Spec: https://omnibuf.com/spec" },
 ];
 
 /** @type {Map<string, CatalogEntry>} */

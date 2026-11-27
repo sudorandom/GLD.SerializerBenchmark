@@ -1,14 +1,15 @@
 # JavaScript (Node.js) Serializer Benchmark
 
-## Serializers (34 with optional simdjson, 33 without)
+## Serializers (36 with optional simdjson, 35 without)
 
 JSON: `JSON.stringify`, `fast-json-stringify`, `simdjson` (optional)  
 Binary: `msgpackr`, `@msgpack/msgpack`, `json-pack-msgpack`, `cbor-x`, `cbor`, `amf-codec`, `biorate-amf`, `bson`, `bser`, `sia`, `ion-js`, `fory`, `gld-kiln`  
-Schema: `avsc`, `protobufjs`, `protobuf-es`, `google-protobuf`, `flatbuffers`, `flexbuffers`, `bebop`, `dagr-packed`, `dagr-regular`, `dagr-frozen`, `dagr-frozen-packed`  
+Schema: `avsc`, `protobufjs`, `protobuf-es`, `google-protobuf`, `omnibuf`, `flatbuffers`, `flexbuffers`, `bebop`, `dagr-packed`, `dagr-regular`, `dagr-frozen`, `dagr-frozen-packed`  
 Native: `v8-serializer`, `devalue`  
 YAML: `js-yaml`  
 TOON: `toon` (`@toon-format/toon`)  
-Columnar: `arrow-ipc`, `parquet`, `parquet-uncompressed`
+Columnar: `arrow-ipc`, `parquet`, `parquet-uncompressed`  
+Array: `h5wasm`
 
 Suite type ids: `message`, `document`, `telemetry`, `strings`, `event`, `table`, `table_project`, `nested_table`, `signal`.
 
@@ -21,6 +22,7 @@ See [docs/javascript/index.md](../docs/javascript/index.md).
 ```bash
 npm install
 npm run generate:protobuf   # protobuf-es + google-protobuf (jspb) stubs
+npm run generate:omnibuf    # protoc-gen-omnibuf-es + esbuild -> src/generated/benchmark_v2_omnibuf.pb.js
 npm run generate:dagr       # esbuild src/generated/dagr/*.ts -> src/generated/dagr_bundle.js
 # google-protobuf codegen needs cpp/scripts/setup-protobuf-sysroot.sh once
 ```

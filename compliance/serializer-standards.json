@@ -77,6 +77,9 @@
       ],
       "gld-kiln": [
         "kiln"
+      ],
+      "omnibuf-nano": [
+        "omnibuf"
       ]
     },
     "python": {
@@ -192,6 +195,9 @@
       ],
       "ctoon": [
         "toon"
+      ],
+      "omnibuf": [
+        "omnibuf"
       ]
     },
     "javascript": {
@@ -281,6 +287,9 @@
       "dagr-frozen-packed": [],
       "toon": [
         "toon"
+      ],
+      "omnibuf": [
+        "omnibuf"
       ]
     },
     "go": {
@@ -374,6 +383,9 @@
       "dagr-frozen-packed": [],
       "toon-go": [
         "toon"
+      ],
+      "omnibuf": [
+        "omnibuf"
       ]
     },
     "java": {
@@ -459,6 +471,9 @@
       ],
       "json-io": [
         "toon"
+      ],
+      "omnibuf": [
+        "omnibuf"
       ]
     },
     "kotlin": {
@@ -555,6 +570,9 @@
       ],
       "ktoon": [
         "toon"
+      ],
+      "omnibuf": [
+        "omnibuf"
       ]
     },
     "csharp": {
@@ -686,6 +704,9 @@
       ],
       "Corvus.Toon": [
         "toon"
+      ],
+      "omnibuf": [
+        "omnibuf"
       ]
     },
     "rust": {
@@ -765,6 +786,9 @@
       ],
       "tru": [
         "toon"
+      ],
+      "omnibuf": [
+        "omnibuf"
       ]
     },
     "cpp": {
@@ -872,7 +896,10 @@
       "dagr-packed": [],
       "dagr-regular": [],
       "dagr-frozen": [],
-      "dagr-frozen-packed": []
+      "dagr-frozen-packed": [],
+      "omnibuf": [
+        "omnibuf"
+      ]
     },
     "swift": {
       "Foundation.JSONEncoder": [
@@ -932,6 +959,9 @@
       "dagr-frozen-packed": [],
       "ToonFormat": [
         "toon"
+      ],
+      "omnibuf": [
+        "omnibuf"
       ]
     },
     "php": {
@@ -982,6 +1012,9 @@
       "igbinary": [],
       "toon": [
         "toon"
+      ],
+      "omnibuf": [
+        "omnibuf"
       ]
     },
     "zig": {

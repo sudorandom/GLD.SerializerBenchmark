@@ -103,6 +103,34 @@ final class RoundtripTests: XCTestCase {
         try roundtrip(ion, batch)
     }
 
+    func testOmniBufRoundtripAllTypes() throws {
+        let packageDir = RunConfig.repoRoot().appendingPathComponent("swift")
+        PackageVersions.loadResolved(from: packageDir)
+        let ser = OmniBufSerializer()
+        XCTAssertEqual(ser.name, "omnibuf")
+        XCTAssertFalse(ser.version.isEmpty)
+        XCTAssertEqual(ser.streamMode, .adapted)
+        XCTAssertEqual(ser.nativeKind, .message)
+        XCTAssertFalse(ser.supports(testDataName: "graph"))
+        XCTAssertFalse(ser.supports(testDataName: "table"))
+        let names = Set(allSerializers().map(\.name))
+        XCTAssertTrue(names.contains("omnibuf"))
+
+        for typeId in ["message", "document", "telemetry", "strings", "event"] {
+            XCTAssertTrue(ser.supports(testDataName: typeId))
+            for n in [1, 5] {
+                let fx = try fixtureFromCell(
+                    typeId: typeId, typeConfig: [:], typeConfigHash: "", instanceCount: n, seed: 42
+                )
+                try roundtrip(ser, fx)
+                let (streamData, count) = try ser.serializeStream(fx)
+                XCTAssertEqual(count, streamData.count)
+                let decoded = try ser.deserializeStream(streamData)
+                XCTAssertTrue(fx.fidelity(against: decoded), "omnibuf stream \(typeId) n=\(n)")
+            }
+        }
+    }
+
     /// Dagr frames N>1 itself (u32 count + (u32 len + buffer)×N) — cover every type.
     /// Covers all four layouts (dagr-packed, dagr-regular, dagr-frozen, dagr-frozen-packed), N=1 and N>1.
     func testDagrBatchRoundtripAllTypes() throws {

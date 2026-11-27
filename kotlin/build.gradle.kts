@@ -8,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath("org.apache.avro:avro-compiler:1.12.1")
+        classpath("com.omnibuf:omnibuf-java:0.1.9")
     }
 }
 
@@ -28,6 +29,7 @@ val kotlinVersion = "2.3.20"
 val kotlinxSerialization = "1.12.0"
 val jackson = "2.22.4"
 val protobuf = "4.36.2"
+val omnibuf = "0.1.9"
 val avro = "1.12.2"
 val moshi = "1.15.2"
 val kryo = "5.7.1"
@@ -119,6 +121,7 @@ dependencies {
     implementation("com.google.protobuf:protobuf-java:$protobuf")
     implementation("com.google.protobuf:protobuf-java-util:$protobuf")
     implementation("com.google.protobuf:protobuf-kotlin:$protobuf")
+    implementation("com.omnibuf:omnibuf-java:$omnibuf")
     implementation("org.msgpack:jackson-dataformat-msgpack:$msgpack")
     implementation("com.google.flatbuffers:flatbuffers-java:$flatbuffers")
     implementation("org.capnproto:runtime:$capnproto")
@@ -230,11 +233,47 @@ val generateAvro =
         }
     }
 
+val omniBufDescriptor = layout.buildDirectory.file("generated/proto/benchmark_v2.desc")
+
+val generateOmniBuf =
+    tasks.register("generateOmniBuf") {
+        dependsOn(tasks.named("generateProto"))
+        val outDir = layout.buildDirectory.dir("generated/omnibuf")
+        inputs.file(omniBufDescriptor)
+        outputs.dir(outDir)
+        doLast {
+            val fds =
+                com.google.protobuf.DescriptorProtos.FileDescriptorSet.parseFrom(
+                    omniBufDescriptor.get().asFile.readBytes(),
+                )
+            val req = com.google.protobuf.compiler.PluginProtos.CodeGeneratorRequest.newBuilder()
+            for (f in fds.fileList) {
+                req.addFileToGenerate(f.name)
+                req.addProtoFile(
+                    f.toBuilder()
+                        .setOptions(f.options.toBuilder().setJavaPackage("benchmark.v2.omnibuf"))
+                        .build(),
+                )
+            }
+            val resp = com.omnibuf.plugin.ProtocGenOmniBufJava.generate(req.build())
+            check(resp.error.isEmpty()) { "protoc-gen-omnibuf-java: ${resp.error}" }
+            val output = outDir.get().asFile
+            output.deleteRecursively()
+            output.mkdirs()
+            for (gen in resp.fileList) {
+                val dst = output.resolve(gen.name)
+                dst.parentFile.mkdirs()
+                dst.writeText(gen.content)
+            }
+        }
+    }
+
 sourceSets {
     named("main") {
         java {
             srcDir(layout.buildDirectory.dir("generated/avro"))
             srcDir(layout.buildDirectory.dir("generated/sbe"))
+            srcDir(layout.buildDirectory.dir("generated/omnibuf"))
         }
         // gld-ion-kotlin 0.2.0 is not on Maven Central. Package ion, tag 0.2.0.
         kotlin {
@@ -247,16 +286,16 @@ sourceSets {
 }
 
 tasks.named("compileJava") {
-    dependsOn(generateAvro, generateSbe)
+    dependsOn(generateAvro, generateSbe, generateOmniBuf)
 }
 
 tasks.named("compileKotlin") {
-    dependsOn(generateAvro, generateSbe)
+    dependsOn(generateAvro, generateSbe, generateOmniBuf)
 }
 
 // KSP registers its task after the project is evaluated.
 tasks.matching { it.name == "kspKotlin" }.configureEach {
-    dependsOn(generateAvro, generateSbe)
+    dependsOn(generateAvro, generateSbe, generateOmniBuf)
 }
 
 protobuf {
@@ -267,6 +306,10 @@ protobuf {
         all().forEach { task ->
             task.builtins {
                 id("kotlin")
+            }
+            if (task.name == "generateProto") {
+                task.generateDescriptorSet = true
+                task.descriptorSetOptions.path = omniBufDescriptor.get().asFile.absolutePath
             }
         }
     }
@@ -279,6 +322,7 @@ tasks.processResources {
                 "kotlinxSerialization" to kotlinxSerialization,
                 "jackson" to jackson,
                 "protobuf" to protobuf,
+                "omnibuf" to omnibuf,
                 "avro" to avro,
                 "moshi" to moshi,
                 "kryo" to kryo,

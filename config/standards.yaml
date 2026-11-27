@@ -82,6 +82,15 @@ standards:
       Typical uses are gRPC APIs and long-lived service data. The bytes are
       compact. A reader needs the field numbers from that schema.
 
+  omnibuf:
+    label: OmniBuf
+    explanation: >-
+      OmniBuf is a schema-first binary wire format compatible with .proto
+      schemas, with unambiguous wire types, prefix-varint integers, and optional
+      inline Field #0 metadata for blind inspection. Services encode compact
+      packets on hot paths and decode them across languages using generated
+      static codecs or zero-decode Opaque views.
+
   avro:
     label: Avro
     explanation: >-

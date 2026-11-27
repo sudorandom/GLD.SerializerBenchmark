@@ -13,16 +13,17 @@
     }
   ],
   "require": {
-    "php": ">=8.2",
+    "php": ">=8.3",
     "ext-gmp": "*",
     "ext-json": "*",
     "ext-zlib": "*",
     "flix-tech/avro-php": "^5.1",
-    "google/protobuf": "^4.29",
+    "google/protobuf": "^4.29 || ^5.0",
     "helgesverre/toon": "^3.0",
     "jms/serializer": "^3.32",
     "leo-gan/gld-arrow-php": "dev-main#463bbddfb35a140d6561e1b56386fd5ee2b283e7 as 0.2.0",
     "leo-gan/gld-ion-php": "dev-main#e199c708b093335e83b11c8ed183c333b7245bb5 as 0.2.0",
+    "omnibuf/omnibuf": "^0.1.7",
     "rybakit/msgpack": "^0.9",
     "spomky-labs/cbor-php": "^3.3.5",
     "symfony/property-access": "^7.2",
@@ -33,7 +34,8 @@
     "psr-4": {
       "Benchmark\\": "src/",
       "Benchmark\\V2\\": "src/Generated/Benchmark/V2/",
-      "GPBMetadata\\": "src/Generated/GPBMetadata/"
+      "GPBMetadata\\": "src/Generated/GPBMetadata/",
+      "OmniBuf\\Benchmark\\V2\\": "src/Generated/OmniBuf/Benchmark/V2/"
     }
   },
   "config": {

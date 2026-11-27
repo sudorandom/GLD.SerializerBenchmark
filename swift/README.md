@@ -7,7 +7,7 @@ Native Swift benchmark runner for Data Model v2 fixtures (`message`, `document`,
 - **Codable wrappers** under `Serializers/` only see the type-erased `Fixture` API.
 - **Schema codecs** (Protobuf, FlatBuffers, Avro, Cap’n Proto, Dagr) use a domain↔native bridge in prepare / post-decode (same idea as Go protobuf / Rust prost). Conversion is not the “optimal hot path”; timed work is the library encode/decode.
 
-## Serializers (23)
+## Serializers (24)
 
 | Name | Category | Package | Notes |
 |------|----------|---------|-------|
@@ -24,6 +24,7 @@ Native Swift benchmark runner for Data Model v2 fixtures (`message`, `document`,
 | XMLCoder | Text | XMLCoder | Root key `payload` |
 | **TOML** | Text | mattt/swift-toml | Table root; ItemsWrap for N>1 |
 | **SwiftProtobuf** | Schema | apple/swift-protobuf | Generated from `schemas/v2/protobuf/` |
+| **omnibuf** | Schema | omnibuf/omnibuf-swift | Generated from `schemas/v2/protobuf/` (`OmniBufGen`) |
 | **FlatBuffers** | Schema | google/flatbuffers | Generated from `swift/schemas/benchmark.fbs` |
 | **SwiftAvroCore** | Schema | lynixliu/SwiftAvroCore | Schemaless binary + JSON schema |
 | **gld-avro** | Schema | leo-gan/gld-avro-swift 0.2.0 | `parseAvsc` outside the timer; `encodeGeneric` / `decodeGeneric` |

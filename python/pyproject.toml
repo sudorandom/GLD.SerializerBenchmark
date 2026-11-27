@@ -15,6 +15,7 @@ authors = [
 dependencies = [
     "pyfory==1.7.7",
     "protobuf>=7.34.1,<8",
+    "omnibuf>=0.1.8,<0.2",
     "orjson>=3.10.0,<4",
     "msgspec>=0.19.0,<1",
     "python-rapidjson>=1.20,<2",

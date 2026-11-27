@@ -81,6 +81,7 @@ fn write_dep_versions(manifest: &std::path::Path) -> Result<(), Box<dyn std::err
         "flexbuffers",
         "rkyv",
         "minicbor",
+        "omnibuf",
         "prost",
         "serde_avro_fast",
         "bson",

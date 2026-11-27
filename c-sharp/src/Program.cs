@@ -115,6 +115,7 @@ namespace GLD.SerializerBenchmark
                 new CsvHelperSerializerSer(new CsvHelperDomainMap()),
                 new FlatSharpSerializerSer(new FlatSharpDomainMap()),
                 new GoogleProtobufSerializerSer(new GoogleProtobufDomainMap()),
+                new OmniBufSerializerSer(new GoogleProtobufDomainMap()),
                 new ApacheAvroSerializerSer(),
                 new KilnSerializerSer(),
                 new HyperionSerializerSer(),

@@ -21,6 +21,7 @@ namespace GLD.SerializerBenchmark
                 case "arrow-ipc":
                 case "parquet":
                 case "parquet-uncompressed":
+                case "omnibuf":
                     return "adapted";
                 case "Json.Net":
                 case "Json.Net (Helper)":

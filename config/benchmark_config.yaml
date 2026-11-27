@@ -160,6 +160,7 @@ serializer_data_sets:
     orc-uncompressed: [columnar]
     orjson: [suite, columnar]
     protobuf: [suite, columnar]
+    omnibuf: [suite, columnar]
     avro: [suite, columnar]
     flatbuffers: [suite, columnar, tensor]
     dagr-regular: [suite, graph]
@@ -179,6 +180,7 @@ serializer_data_sets:
     sbe: [columnar]
     nlohmann_json: [suite, columnar]
     protobuf: [suite, columnar]
+    omnibuf: [suite, columnar]
     flatbuffers: [suite, columnar]
     avro: [suite, columnar]
     dagr-regular: [suite, graph]
@@ -191,6 +193,7 @@ serializer_data_sets:
     parquet-uncompressed: [columnar]
     System.Text.Json: [suite, columnar]
     Google.Protobuf: [suite, columnar]
+    omnibuf: [suite, columnar]
     FlatSharp: [suite, columnar]
     Apache.Avro: [suite, columnar]
     PureHDF: [array]
@@ -202,6 +205,7 @@ serializer_data_sets:
     sbe: [columnar]
     encoding/json: [suite, columnar]
     protobuf: [suite, columnar]
+    omnibuf: [suite, columnar]
     hamba/avro: [suite, columnar]
     dagr-regular: [suite, graph]
     dagr-frozen: [suite, graph]
@@ -215,6 +219,7 @@ serializer_data_sets:
     sbe: [columnar]
     jackson: [suite, columnar]
     protobuf: [suite, columnar]
+    omnibuf: [suite, columnar]
     flatbuffers: [suite, columnar]
     avro: [suite, columnar]
     gld-kiln: [suite, tensor]
@@ -227,6 +232,7 @@ serializer_data_sets:
     sbe: [columnar]
     kotlinx-json: [suite, columnar]
     protobuf: [suite, columnar]
+    omnibuf: [suite, columnar]
     flatbuffers: [suite, columnar]
     avro: [suite, columnar]
   javascript:
@@ -235,6 +241,7 @@ serializer_data_sets:
     parquet-uncompressed: [columnar]
     "JSON.stringify": [suite, columnar]
     protobufjs: [suite, columnar]
+    omnibuf: [suite, columnar]
     flatbuffers: [suite, columnar]
     avsc: [suite, columnar]
     dagr-regular: [suite, graph]
@@ -248,6 +255,7 @@ serializer_data_sets:
     sbe: [columnar]
     serde_json: [suite, columnar]
     prost: [suite, columnar]
+    omnibuf: [suite, columnar]
     serde_avro_fast: [suite, columnar]
     dagr-regular: [suite, graph]
     dagr-frozen: [suite, graph]
@@ -601,7 +609,7 @@ languages:
     log_dir: logs/csharp
     time_unit: nanoseconds
     docs_dir: docs/c-sharp
-    # 52 serializers registered (Program.cs); ShapeShift.Taml skips the strings fixture.
+    # 53 serializers registered (Program.cs); ShapeShift.Taml skips the strings fixture.
     # PureHDF times grid and grid_window only. Fory is the suite types only.
     # Dropped: Apex.Serialization (net8 FieldInfoModifier crash), FluentSerializer (unsuitable graphs).
     # Added: System.Text.Json, Apache.Avro. See docs/c-sharp/index.md for inventory + PrepareData projections.
@@ -659,6 +667,12 @@ languages:
         category: schema
         package: protobuf
         rationale: "Google Protocol Buffers"
+      - name: omnibuf
+        category: schema
+        package: omnibuf
+        version: "0.1.8"
+        rationale: "OmniBuf v1 binary wire format (Rust PyO3 CompiledCodec over slotted dataclasses)"
+        optimal_api: "CompiledCodec.marshal / unmarshal on generated benchmark_v2 dataclasses"
       - name: dagr-packed
         category: schema
         package: generated (schemas/v2/dagr via `dagr build`; runtime shipped in python/generated/dagr)
@@ -784,6 +798,12 @@ languages:
         crate: prost
         rationale: "De-facto Rust Protocol Buffers (prost + prost-build from shared suite protos)"
         optimal_api: "Message::encode / decode on prepared messages (convert in prepare)"
+      - name: omnibuf
+        category: schema
+        crate: omnibuf
+        version: "0.1.12"
+        rationale: "OmniBuf v1 static codecs generated from schemas/v2/protobuf/benchmark_v2.proto"
+        optimal_api: "encode_omnibuf_append into reused Vec<u8>; linear decoders and OpaqueTable projection"
       - name: serde_avro_fast
         category: schema
         crate: serde_avro_fast
@@ -921,6 +941,12 @@ languages:
         library: libprotobuf (Google)
         rationale: "Official Google Protocol Buffers C++ runtime used from C benchmark runner (SerializeToArray/ParseFromArray)"
         optimal_api: "prepare Message; timed SerializeToArray / ParseFromArray"
+      - name: omnibuf-nano
+        category: schema
+        library: omnibuf/omnibuf-nano
+        version: "0.1.3"
+        rationale: "Zero-malloc C99 OmniBuf v1 runtime with protoc-gen-omnibuf-nano static descriptors"
+        optimal_api: "ob_encode / ob_decode into reusable buffers; length-backpatched Batch array framing"
       - name: protobuf-wire
         category: schema
         library: in-tree-wire
@@ -1056,6 +1082,12 @@ languages:
         package: google-protobuf
         rationale: "Official Google JS runtime (jspb) from protoc --js_out"
         optimal_api: "serializeBinary / deserializeBinary on prepared messages"
+      - name: omnibuf
+        category: schema
+        package: "@omnibuf/core"
+        version: "0.1.15"
+        rationale: "OmniBuf v1 static codecs with @omnibuf/node Buffer codecs"
+        optimal_api: "reused Encoder + encode*/decode*; direct readFloat64 projection on table_project"
       - name: dagr-packed
         category: schema
         package: "generated TS (dagr build, schemas/v2/dagr) bundled by esbuild"
@@ -1230,6 +1262,12 @@ languages:
         package: google.golang.org/protobuf
         rationale: "Official Protocol Buffers (shared .proto)"
         optimal_api: "proto.Marshal / Unmarshal on generated messages (convert in prepare)"
+      - name: omnibuf
+        category: schema
+        package: github.com/omnibuf/omnibuf-go
+        version: "0.2.13"
+        rationale: "OmniBuf v1 pure-Go runtime with protoc-gen-omnibuf-go static codecs"
+        optimal_api: "MarshalOmniBufAppend / UnmarshalOmniBuf with dst reuse and OpaqueTable projection"
       - name: dagr-packed
         category: schema
         package: dagrv2 (generated by `dagr build` from schemas/v2/dagr/schema.py; go/gen/dagrv2)
@@ -1368,6 +1406,12 @@ languages:
         package: com.google.protobuf:protobuf-java
         rationale: "Official Protocol Buffers Java runtime"
         optimal_api: "toByteArray/parseFrom on prepared MessageLite; domain convert untimed"
+      - name: omnibuf
+        category: schema
+        package: com.omnibuf:omnibuf-java
+        version: "0.1.9"
+        rationale: "OmniBuf v1 Java 21 runtime with protoc-gen-omnibuf-java static codecs"
+        optimal_api: "reused OmniBufEncoder + unmarshal into target; OpaqueTable projection on table_project"
       - name: avro
         category: schema
         package: org.apache.avro:avro
@@ -1491,6 +1535,12 @@ languages:
         package: com.google.protobuf:protobuf-kotlin
         rationale: "Official protobuf-kotlin generated DSL on the shared suite .proto"
         optimal_api: "Kotlin DSL builders (message { }) then toByteArray/parseFrom"
+      - name: omnibuf
+        category: schema
+        package: com.omnibuf:omnibuf-java
+        version: "0.1.9"
+        rationale: "OmniBuf v1 JVM runtime and generated static codecs called from Kotlin"
+        optimal_api: "reused OmniBufEncoder + unmarshal into target; OpaqueTable projection on table_project"
       - name: flatbuffers
         category: schema
         package: com.google.flatbuffers:flatbuffers-java
@@ -1530,7 +1580,7 @@ languages:
     log_dir: logs/php
     time_unit: nanoseconds
     docs_dir: docs/php
-    min_php_version: "8.2"
+    min_php_version: "8.3"
     serializers:
       - name: json
         category: json
@@ -1567,6 +1617,12 @@ languages:
         package: google/protobuf
         rationale: "Official protobuf PHP; uses ext-protobuf when loaded"
         optimal_api: "serializeToString / mergeFromString on generated messages"
+      - name: omnibuf
+        category: schema
+        package: omnibuf/omnibuf
+        version: "0.1.7"
+        rationale: "OmniBuf v1 PHP 8.3+ runtime with protoc-gen-omnibuf-php generated classes"
+        optimal_api: "reused Encoder::marshalTo / unmarshalInto on generated Tier 1 message classes"
       - name: symfony-json
         category: json
         package: symfony/serializer
@@ -2002,6 +2058,12 @@ languages:
         library: libprotobuf (Google C++ runtime)
         rationale: "Official Protocol Buffers C++ (protoc + libprotobuf from suite sysroot)"
         optimal_api: "SerializeToArray / ParseFromArray on prepared MessageLite"
+      - name: omnibuf
+        category: schema
+        library: omnibuf/omnibuf-cpp
+        version: "0.1.7"
+        rationale: "Header-only C++20 OmniBuf v1 runtime with protoc-gen-omnibuf-cpp static codecs"
+        optimal_api: "marshal_omnibuf_append (FastWriter) / unmarshal_omnibuf into reused target; direct wire projection on table_project"
       - name: protobuf-wire
         category: schema
         library: in-tree wire (suite .proto)
@@ -2156,6 +2218,12 @@ languages:
       - name: SwiftProtobuf
         category: schema
         package: apple/swift-protobuf
+      - name: omnibuf
+        category: schema
+        package: omnibuf/omnibuf-swift
+        version: "0.1.4"
+        rationale: "OmniBuf v1 Swift 6 runtime with protoc-gen-omnibuf-swift static codecs"
+        optimal_api: "reused OmniBufWriter + encodeOmniBufBody / mergeOmniBuf from Data.withUnsafeBytes"
       - name: FlatBuffers
         category: schema
         package: google/flatbuffers

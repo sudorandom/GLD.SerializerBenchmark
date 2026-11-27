@@ -21,6 +21,7 @@ public func allSerializers() -> [any BenchSerializer] {
         TOMLSerializer(),
         // Schema / IDL
         SwiftProtobufSerializer(),
+        OmniBufSerializer(),
         FlatBuffersSerializer(),
         SwiftAvroSerializer(),
         GldAvroSerializer(),

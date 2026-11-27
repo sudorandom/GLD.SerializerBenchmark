@@ -43,6 +43,7 @@ mod hdf5_metno;
 mod json;
 mod kiln_ser;
 mod kinded;
+mod omnibuf_ser;
 mod prost_ser;
 mod sbe_ser;
 mod ctoon;
@@ -61,6 +62,7 @@ use direct::{MinicborDirect, NanoserdeSer, RkyvSer, SpeedySer};
 use hdf5_metno::Hdf5Metno;
 use json::{SerdeJson, SimdJson, SonicRs};
 use kiln_ser::KilnSer;
+use omnibuf_ser::OmniBufSer;
 use prost_ser::ProstSer;
 use sbe_ser::SbeSer;
 use ctoon::Ctoon;
@@ -237,6 +239,7 @@ pub fn all_serializers() -> Vec<Box<dyn BenchSerializer>> {
         Box::new(MinicborDirect::default()),
         Box::new(RkyvSer::default()),
         Box::new(ProstSer::default()),
+        Box::new(OmniBufSer::default()),
         Box::new(AvroFastSer::default()),
         Box::new(DagrSer::default()),
         Box::new(DagrRegularSer::default()),
@@ -314,7 +317,7 @@ mod tests {
         let fx = make_one("message", 42, 0, &TypeConfig::default()).unwrap();
         let mut ok = 0;
         let all = all_serializers();
-        assert_eq!(all.len(), 33);
+        assert_eq!(all.len(), 34);
         for mut ser in all_serializers() {
             if !ser.supports("message") {
                 continue;
@@ -323,7 +326,7 @@ mod tests {
             ok += 1;
         }
         // Columnar rows and HDF5 do not support message. scuffle-amf0 and the TOON rows do.
-        assert_eq!(ok, 28);
+        assert_eq!(ok, 29);
     }
 
     #[test]
@@ -408,6 +411,7 @@ mod tests {
             "sbe",
             "serde_json",
             "prost",
+            "omnibuf",
             "serde_avro_fast",
         ];
         for mut ser in all_serializers() {

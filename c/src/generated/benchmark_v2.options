@@ -1,0 +1,41 @@
+# Static bounds for omnibuf-nano matching c/include/bench.h Data Model v2 limits:
+# V2_STR=48, V2_MAX_CHILDREN=16, V2_MAX_TAGS=8, V2_MAX_POINTS=512,
+# V2_MAX_STRINGS=64, V2_MAX_ATTRS=16.
+
+benchmark.v2.Message.f_string max_size:48
+benchmark.v2.Message.f_string_2 max_size:48
+
+benchmark.v2.DocumentMeta.region max_size:48
+benchmark.v2.DocumentItem.sku max_size:48
+benchmark.v2.Document.id max_size:48
+benchmark.v2.Document.items max_count:16
+
+benchmark.v2.Telemetry.source max_size:48
+benchmark.v2.Telemetry.tags max_count:8 max_size:48
+benchmark.v2.Telemetry.values max_count:512
+
+benchmark.v2.Strings.items max_count:64 max_size:48
+
+benchmark.v2.EventAttr.key max_size:48
+benchmark.v2.EventAttr.value max_size:48
+benchmark.v2.Event.event_id max_size:48
+benchmark.v2.Event.event_type max_size:48
+benchmark.v2.Event.producer max_size:48
+benchmark.v2.Event.attrs max_count:16
+
+# Skip batch wrappers (streamed directly as OmniBuf WireArray of WireSubmsg to
+# stay within omnibuf-nano's 64 KiB static struct limit) and non-suite schemas.
+benchmark.v2.BatchMessage skip_message:true
+benchmark.v2.BatchDocument skip_message:true
+benchmark.v2.BatchTelemetry skip_message:true
+benchmark.v2.BatchStrings skip_message:true
+benchmark.v2.BatchEvent skip_message:true
+benchmark.v2.Table skip_message:true
+benchmark.v2.BatchTable skip_message:true
+benchmark.v2.NestedMeta skip_message:true
+benchmark.v2.NestedItem skip_message:true
+benchmark.v2.NestedRow skip_message:true
+benchmark.v2.BatchNestedRow skip_message:true
+benchmark.v2.SignalLeg skip_message:true
+benchmark.v2.Signal skip_message:true
+benchmark.v2.BatchSignal skip_message:true

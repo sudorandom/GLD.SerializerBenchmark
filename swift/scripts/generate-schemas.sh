@@ -25,6 +25,16 @@ protoc \
   -I "$ROOT/schemas/v2/protobuf" \
   "$ROOT/schemas/v2/protobuf/benchmark_v2.proto"
 
+if command -v protoc-gen-omnibuf-swift >/dev/null 2>&1; then
+  echo "[INFO] protoc → OmniBuf Swift"
+  mkdir -p "$SWIFT_DIR/Sources/OmniBufGen"
+  protoc \
+    --plugin=protoc-gen-omnibuf-swift="$(command -v protoc-gen-omnibuf-swift)" \
+    --omnibuf-swift_out="$SWIFT_DIR/Sources/OmniBufGen" \
+    -I "$ROOT/schemas/v2/protobuf" \
+    "$ROOT/schemas/v2/protobuf/benchmark_v2.proto"
+fi
+
 echo "[INFO] flatc → FlatBuffers Swift"
 cp -f "$ROOT/cpp/schemas/benchmark.fbs" "$SWIFT_DIR/schemas/benchmark.fbs"
 flatc --swift -o "$OUT" "$SWIFT_DIR/schemas/benchmark.fbs"

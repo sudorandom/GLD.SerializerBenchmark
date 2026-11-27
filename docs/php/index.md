@@ -12,7 +12,7 @@ The PHP runner executes as a single long-lived **CLI** process on the Zend opcod
 
 | Property | Configuration |
 |---|---|
-| Language / spec | PHP 8.2+ (`composer.json`; install script provides static PHP 8.3 CLI) |
+| Language / spec | PHP 8.3+ (`composer.json`; install script provides static PHP 8.3 CLI) |
 | Build & toolchain | Composer (`composer install`); protobuf stubs via `php/scripts/generate-protobuf.sh` |
 | Memory model | Zend reference counting + cyclic garbage collector |
 | Runner & logs | `php/scripts/run-benchmarks.sh` → `logs/php/YYYY-MM-DD-HHMMSS.csv` (nanoseconds) |
@@ -34,6 +34,7 @@ Optional PECL rows register only when their corresponding C extension is loaded 
 | [jms-json](https://github.com/schmittjoh/serializer) | `json` | `suite` | `text_on_stream` | `jms/serializer` annotation-driven JSON encoder |
 | [json](https://github.com/php/php-src/tree/master/ext/json) | `json` | `suite` | `text_on_stream` | Bundled C `ext-json` (`json_encode` / `json_decode`) |
 | [msgpack-pecl](https://github.com/msgpack/msgpack-php) | `msgpack` | `suite` (optional) | `adapted` | `ext-msgpack` C extension (PECL; skipped if unloaded) |
+| [omnibuf](https://github.com/omnibuf/omnibuf-php) | `omnibuf` | `suite` | `adapted` | Generated Tier 1 message classes (`marshalTo` / `unmarshalInto`) with direct `OmniBufSer` conversion and reused `Encoder`; version reports `+ext` vs. `+php` |
 | [protobuf](https://github.com/protocolbuffers/protobuf) | `protobuf` | `suite` | `adapted` | Official `google/protobuf` generated messages; version reports `+ext` vs. `+php` |
 | [rybakit-msgpack](https://github.com/rybakit/msgpack.php) | `msgpack` | `suite` | `adapted` | Pure-PHP `rybakit/msgpack` userland baseline |
 | [serialize](https://github.com/php/php-src) | `custom` | `suite` | `adapted` | Bundled PHP `serialize` / `unserialize` (PHP-only; unsafe on untrusted input) |
@@ -57,6 +58,7 @@ Optional PECL rows register only when their corresponding C extension is loaded 
     - **[jms-json](https://github.com/schmittjoh/serializer)** — JMS Serializer was created for PHP applications that needed annotation-driven object serialization (especially APIs). The problem was mapping rich object graphs to JSON. This row times the JSON encoder.
     - **[json](https://github.com/php/php-src/tree/master/ext/json)** — PHP's `json_encode` / `json_decode` are the language's standard JSON APIs. They exist so PHP can speak the web's data format without a package. This row times the bundled ext-json.
     - **[msgpack-pecl](https://github.com/msgpack/msgpack-php)** — ext-msgpack is the official PECL MessagePack extension for PHP. MessagePack exists as compact binary JSON. The C extension is the fast path versus userland MessagePack.
+    - **[omnibuf](https://github.com/omnibuf/omnibuf-php)** — OmniBuf is a schema-driven binary wire format built for `.proto` contracts with unambiguous wire types, prefix-varint integers, and optional inline Field #0 metadata. This row benchmarks compact mode (`self_describing = false`) using static codecs generated from `schemas/v2/protobuf/benchmark_v2.proto`. Uses generated Tier 1 PHP message classes with direct `OmniBufSer` conversion, a reused `Encoder` and decode target (`marshalTo` / `unmarshalInto`), and `+ext` vs. `+php` version reporting.
     - **[protobuf](https://github.com/protocolbuffers/protobuf)** — Protocol Buffers were created at Google so many languages could share a compact, evolving binary contract without hand-written parsers. The problem was ad-hoc binary formats and verbose XML. Protobuf solves it with an IDL, generated code, and a documented tag/length wire format.
     - **[rybakit-msgpack](https://github.com/rybakit/msgpack.php)** — rybakit/msgpack is a pure-PHP MessagePack implementation. MessagePack exists as compact binary JSON. This package is the userland baseline versus the PECL extension.
     - **[serialize](https://github.com/php/php-src)** — PHP `serialize` / `unserialize` is the language's native object format. It exists so PHP can persist values across requests. It is PHP-only and unsafe for untrusted input.

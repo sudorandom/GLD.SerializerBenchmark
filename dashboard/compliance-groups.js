@@ -54,6 +54,7 @@ export const FORMAT_LABELS = {
   cbor: 'CBOR',
   msgpack: 'MessagePack',
   protobuf: 'Protocol Buffers',
+  omnibuf: 'OmniBuf',
   avro: 'Avro',
   bson: 'BSON',
   flatbuffers: 'FlatBuffers',
@@ -149,6 +150,15 @@ export const PUBLISHED_STANDARD_COLUMNS = {
       standard: 'Kiln wire v2',
       version: 'v2',
       standard_url: 'https://leo-gan.github.io/gld-kiln/spec/',
+      unscored: true,
+    },
+  ],
+  omnibuf: [
+    {
+      key: 'OmniBuf wire v1',
+      standard: 'OmniBuf wire v1',
+      version: 'v1',
+      standard_url: 'https://omnibuf.com/spec',
       unscored: true,
     },
   ],

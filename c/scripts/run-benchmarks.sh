@@ -9,7 +9,7 @@ source "$PROJECT_ROOT/scripts/lib/config.sh"
 bench_init_runner c cJSON "$@"
 mkdir -p "$C_DIR/build"
 
-if [[ ! -f "$C_DIR/third_party/_prefix/lib/libjansson.a" || ! -f "$C_DIR/third_party/gld-kiln-c/build/libkiln.a" ]]; then
+if [[ ! -f "$C_DIR/third_party/_prefix/lib/libjansson.a" || ! -f "$C_DIR/third_party/gld-kiln-c/build/libkiln.a" || ! -f "$C_DIR/third_party/omnibuf-nano/runtime/ob_encode.c" ]]; then
   echo "[INFO] C third_party deps missing; running fetch-and-build-deps.sh (first run may take several minutes)..."
   "$C_DIR/scripts/fetch-and-build-deps.sh"
 fi

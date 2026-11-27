@@ -139,7 +139,7 @@ func TestRegistryHasExpectedNames(t *testing.T) {
 		"encoding/json", "encoding/json/v2", "sonic", "goccy/go-json", "jsoniter",
 		"vmihailenco/msgpack", "shamaton/msgpack", "fxamacker/cbor",
 		"go-amf0", "gamf-amf0",
-		"encoding/gob", "mongo-bson", "ion-go", "protobuf", "hamba/avro", "linkedin/goavro",
+		"encoding/gob", "mongo-bson", "ion-go", "protobuf", "omnibuf", "hamba/avro", "linkedin/goavro",
 	} {
 		if !names[want] {
 			t.Errorf("missing serializer %s", want)
@@ -232,6 +232,92 @@ func TestProtobufSupportsOnlyV2(t *testing.T) {
 	}
 }
 
+func TestOmniBufTimedPathAndBatchRoundtrip(t *testing.T) {
+	s := newOmniBuf()
+	if s.Supports("not-a-suite-type") || s.Supports("graph") {
+		t.Fatal("omnibuf should reject unknown type ids and graph")
+	}
+	for _, id := range []string{
+		"message", "document", "telemetry", "strings", "event",
+		"table", "table_project", "nested_table", "signal",
+	} {
+		if !s.Supports(id) {
+			t.Fatalf("omnibuf should support %s", id)
+		}
+	}
+
+	// Verify dst reuse, caller buffer ownership, and owned-string safety.
+	fx := v2Fixture("message")
+	if err := s.Prepare(fx); err != nil {
+		t.Fatal(err)
+	}
+	raw1, err := s.SerializeBytes(fx)
+	if err != nil || len(raw1) == 0 {
+		t.Fatalf("serialize: %v len=%d", err, len(raw1))
+	}
+	raw2, err := s.SerializeBytes(fx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(raw1, raw2) {
+		t.Fatal("omnibuf encode not deterministic")
+	}
+	if &raw1[0] == &raw2[0] {
+		t.Fatal("SerializeBytes returned aliased scratch buffer")
+	}
+	decoded1, err := s.DeserializeBytes(raw1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := decoded1.(omniWireMessage); !ok {
+		t.Fatalf("deserialize should return omniWireMessage on timed path, got %T", decoded1)
+	}
+	decoded2, err := s.DeserializeBytes(raw2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if decoded1 != decoded2 {
+		t.Fatal("expected reused omnibuf dst message across DeserializeBytes calls")
+	}
+	// Mutating input buffer must not corrupt decoded owned strings.
+	for i := range raw2 {
+		raw2[i] ^= 0xff
+	}
+	dom, err := s.ToDomain(decoded2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !model.Fidelity(fx.Value, dom) {
+		t.Fatal("omnibuf owned-string fidelity failed after input mutation")
+	}
+
+	// Round-trip all five suite types for N=1 and N=100 batches.
+	for _, typeID := range []string{"message", "document", "telemetry", "strings", "event"} {
+		for _, n := range []int{1, 100} {
+			_, val := modelv2.FixtureFromCell(modelv2.Cell{TypeID: typeID, DataTypeInstanceCount: n}, 42)
+			cellFx := model.Fixture{Name: typeID, Value: val}
+			if err := s.Prepare(cellFx); err != nil {
+				t.Fatalf("%s N=%d prepare: %v", typeID, n, err)
+			}
+			raw, err := s.SerializeBytes(cellFx)
+			if err != nil {
+				t.Fatalf("%s N=%d ser: %v", typeID, n, err)
+			}
+			out, err := s.DeserializeBytes(raw)
+			if err != nil {
+				t.Fatalf("%s N=%d deser: %v", typeID, n, err)
+			}
+			dom, err := s.ToDomain(out)
+			if err != nil {
+				t.Fatalf("%s N=%d toDomain: %v", typeID, n, err)
+			}
+			if !model.Fidelity(cellFx.Value, dom) {
+				t.Fatalf("%s N=%d fidelity failed", typeID, n)
+			}
+		}
+	}
+}
+
 func TestCallPathDocsMentionOptimizations(t *testing.T) {
 	// Sanity: msgpack file documents Encoder reuse.
 	// (structural guard so the optimized path is not silently removed)
@@ -283,6 +369,7 @@ func TestStreamModeLabels(t *testing.T) {
 		"hamba/avro":               StreamNative,
 		// Byte-slice-only libraries (OCF would change wire format vs bytes):
 		"protobuf":           StreamAdapted,
+		"omnibuf":            StreamAdapted,
 		"linkedin/goavro":    StreamAdapted,
 		"fory":               StreamAdapted,
 		"dagr-packed":        StreamAdapted,

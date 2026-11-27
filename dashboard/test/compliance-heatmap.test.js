@@ -90,7 +90,7 @@ test('Arrow, Parquet, ORC, and SBE show spec columns when the matrix is empty', 
   }
   assert.deepEqual(
     Object.keys(PUBLISHED_STANDARD_COLUMNS).sort(),
-    ['arrow', 'kiln', 'orc', 'parquet', 'sbe'],
+    ['arrow', 'kiln', 'omnibuf', 'orc', 'parquet', 'sbe'],
   );
   const kiln = complianceHeatmap([], {
     format: 'kiln',
@@ -103,6 +103,17 @@ test('Arrow, Parquet, ORC, and SBE show spec columns when the matrix is empty', 
   assert.equal(kiln.columns[0].standard_url, 'https://leo-gan.github.io/gld-kiln/spec/');
   assert.deepEqual(kiln.rows.map((row) => row.serializer), ['gld-kiln']);
   assert.ok(kiln.rows.every((row) => row.byStandard.size === 0));
+  const omnibuf = complianceHeatmap([], {
+    format: 'omnibuf',
+    language: 'go',
+    extras: [{ language: 'go', serializer: 'omnibuf' }],
+  });
+  assert.deepEqual(omnibuf.columns.map((column) => column.standard), ['OmniBuf wire v1']);
+  assert.equal(omnibuf.columns[0].unscored, true);
+  assert.equal(omnibuf.columns[0].version, 'v1');
+  assert.equal(omnibuf.columns[0].standard_url, 'https://omnibuf.com/spec');
+  assert.deepEqual(omnibuf.rows.map((row) => row.serializer), ['omnibuf']);
+  assert.ok(omnibuf.rows.every((row) => row.byStandard.size === 0));
 
   const onlyOrc = complianceHeatmap([], {
     format: 'orc',

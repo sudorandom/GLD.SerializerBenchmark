@@ -38,6 +38,7 @@ public final class Registry {
           new Entry("json-io", JsonIoToonSer::new),
           // Schema
           new Entry("protobuf", ProtobufSer::new),
+          new Entry("omnibuf", OmniBufSer::new),
           new Entry("avro", AvroSer::new),
           new Entry("flatbuffers", FlatBuffersSer::new),
           new Entry("capnproto", CapnProtoSer::new),

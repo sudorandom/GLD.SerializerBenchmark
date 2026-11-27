@@ -33,5 +33,9 @@ def test_python_membership_is_exact():
     assert dataset_allows("gld-kiln", "table") is False
     assert dataset_allows("protobuf", "signal") is True
     assert dataset_allows("protobuf", "request") is False
+    assert dataset_allows("omnibuf", "message") is True
+    assert dataset_allows("omnibuf", "table") is True
+    assert dataset_allows("omnibuf", "signal") is True
+    assert dataset_allows("omnibuf", "request") is False
     assert dataset_allows("msgspec", "document") is True
     assert dataset_allows("msgspec", "table") is False

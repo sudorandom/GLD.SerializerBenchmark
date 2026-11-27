@@ -191,13 +191,14 @@ int run_columnar_checks() {
                           "nlohmann_json",
                           "protobuf",
                           "flatbuffers",
-                          "avro"};
+                          "avro",
+                          "omnibuf"};
   const char* types[] = {"table", "table_project", "nested_table", "signal"};
   for (const char* codec : codecs) {
     auto* ser = find_ser(all, codec);
     const bool optional_arrow = std::string(codec) != "sbe" && std::string(codec) != "nlohmann_json" &&
                                 std::string(codec) != "protobuf" && std::string(codec) != "flatbuffers" &&
-                                std::string(codec) != "avro";
+                                std::string(codec) != "avro" && std::string(codec) != "omnibuf";
     if (!ser) {
       expect(!arrow_on && optional_arrow, std::string("missing serializer ") + codec);
       continue;

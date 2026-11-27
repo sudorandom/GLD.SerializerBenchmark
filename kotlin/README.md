@@ -2,9 +2,9 @@
 
 Part of the [Multi-Language Serializer Benchmark](../README.md).
 
-## Serializers (34)
+## Serializers (35)
 
-The registry has 34 serializers.
+The registry has 35 serializers.
 
 | Name | Category | Package | Call path notes |
 |------|----------|---------|-----------------|
@@ -31,6 +31,7 @@ The registry has 34 serializers.
 | tomlkt | TOML | net.peanuuutz.tomlkt | Table root; list wrap `{ items = [...] }` for N>1 |
 | protobuf | Schema | protobuf-java | Java `newBuilder()`; timed `toByteArray`/`parseFrom` |
 | protobuf-kotlin | Schema | protobuf-kotlin | Kotlin DSL builders (`message { }`) then wire encode |
+| omnibuf | Schema | com.omnibuf:omnibuf-java | Build-time static codecs; reused `OmniBufEncoder` |
 | avro4k | Schema | avro4k-core | kotlinx Avro `encodeToByteArray` |
 | avro | Schema | avro | ReflectDatumWriter/Reader + BinaryEncoder reuse |
 | thrift | Schema | libthrift | TCompactProtocol field ids aligned with suite proto |

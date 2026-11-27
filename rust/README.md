@@ -14,15 +14,16 @@ rust/src/serializers/
   direct.rs        # minicbor, rkyv, nanoserde, speedy
   fory_ser.rs      # Apache Fory registered structs
   prost_ser.rs     # prost + fixture conversion
+  omnibuf_ser.rs   # OmniBuf static codecs (gen/omnibuf/benchmark_v2_omnibuf.rs)
   avro_ser.rs      # serde_avro_fast (Avro binary datum)
   columnar.rs      # arrow-ipc, parquet, parquet-uncompressed
   dagr_ser.rs      # Dagr, four node layouts (generated direct builder / arena + lazy reader)
   sbe_ser.rs       # sbe-tool 1.40.2 flyweights (vendored rust/gen/sbe)
 ```
 
-## Serializers (33)
+## Serializers (34)
 
-`all_serializers()` registers 33 rows, Fory and the four Dagr layout rows included. The four columnar rows are `arrow-ipc`, `parquet`, `parquet-uncompressed`, and `sbe`.
+`all_serializers()` registers 34 rows, Fory, OmniBuf, and the four Dagr layout rows included. The four columnar rows are `arrow-ipc`, `parquet`, `parquet-uncompressed`, and `sbe`.
 
 | Name | Category | Call path notes |
 |------|----------|-----------------|
@@ -43,6 +44,7 @@ rust/src/serializers/
 | minicbor | CBOR | direct `Encode`/`Decode` |
 | rkyv | Zero-copy | timed path materializes owned `T` for fidelity |
 | prost | Protobuf | convert in `prepare`; timed codec only |
+| omnibuf | Schema | static codecs (`gen/omnibuf/`); convert in `prepare`; timed codec only |
 | serde_avro_fast | Schema | schema + `SerializerConfig` once; `to_datum` / `from_datum_slice` |
 | dagr-packed | Schema | generated crate `dagr_gen/`; direct builder `write_into` a reused `DagrBuilder` / lazy `read_root` → domain |
 | dagr-regular | Schema | same crate, `regular` (vtable) graphs; generated arena built in `prepare`, timed arena `store` into a reused `DagrBuilder` / lazy `read_root` → domain |
@@ -101,5 +103,6 @@ Analysis: `analyze-benchmarks -l rust`.
 ## Build notes
 
 - `build.rs` compiles `schemas/v2/protobuf/benchmark_v2.proto` via prost-build.  
+- `gen/omnibuf/benchmark_v2_omnibuf.rs` is generated from `schemas/v2/protobuf/benchmark_v2.proto` via `protoc-gen-omnibuf-rs` and committed for offline builds.  
 - `dagr_gen/` is generated and committed: `cd schemas/v2/dagr && dagr build` (`pip install dagr-cli`). `build.rs` reads the Dagr version from the receipt `dagr.lock.json`.  
 - Offline builds need a populated `target/` / vendor cache.

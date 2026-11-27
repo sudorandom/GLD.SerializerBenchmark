@@ -12,6 +12,7 @@ use Benchmark\DataV2;
 use Benchmark\Serializers\ArrowSer;
 use Benchmark\Serializers\IonSer;
 use Benchmark\Serializers\JsonSer;
+use Benchmark\Serializers\OmniBufSer;
 use Benchmark\Serializers\Registry;
 
 $fail = 0;
@@ -52,6 +53,7 @@ check('json stream matches bytes', $written === strlen($bytes) && $fromStream['i
 $names = array_map(static fn ($s) => $s->name(), Registry::select(''));
 check('registry includes json', in_array('json', $names, true));
 check('registry includes protobuf', in_array('protobuf', $names, true));
+check('registry includes omnibuf', in_array('omnibuf', $names, true));
 check('registry includes serialize', in_array('serialize', $names, true));
 check('registry includes gld-arrow', in_array('gld-arrow', $names, true));
 check('registry includes gld-ion', in_array('gld-ion', $names, true));
@@ -89,6 +91,46 @@ foreach ([new ArrowSer(), new IonSer()] as $ser) {
     $ser->prepare($batch);
     check($ser->name() . ' message batch', sameValue($batch, $ser->deserializeBytes($ser->serializeBytes($batch))));
 }
+
+$ob = new OmniBufSer();
+check(
+    'omnibuf version',
+    (str_starts_with($ob->version(), 'v0.') || str_starts_with($ob->version(), '0.'))
+        && (str_ends_with($ob->version(), '+ext') || str_ends_with($ob->version(), '+php')),
+    $ob->version(),
+);
+check('omnibuf stream mode', $ob->streamMode() === 'adapted');
+$obSkipped = false;
+try {
+    $ob->prepare(['orders' => [], 'people' => []]);
+} catch (\InvalidArgumentException) {
+    $obSkipped = true;
+}
+check('omnibuf skips graph', $obSkipped);
+foreach (['message', 'document', 'telemetry', 'strings', 'event'] as $typeId) {
+    $one = DataV2::makeOne($typeId, [], 42, 0);
+    $ob->prepare($one);
+    $raw = $ob->serializeBytes($one);
+    check("omnibuf $typeId round-trip", sameValue($one, $ob->deserializeBytes($raw)));
+    check("omnibuf $typeId size", strlen($raw) > 8);
+
+    $other = DataV2::makeOne($typeId, [], 42, 1);
+    $rawOther = $ob->serializeBytes($other);
+    check("omnibuf $typeId uncached value round-trip", sameValue($other, $ob->deserializeBytes($rawOther)));
+
+    $batch = DataV2::instances($typeId, [], 42, 3);
+    $ob->prepare($batch);
+    $rawBatch = $ob->serializeBytes($batch);
+    check("omnibuf $typeId batch round-trip", sameValue($batch, $ob->deserializeBytes($rawBatch)));
+}
+$obDoc = DataV2::makeOne('document', [], 42, 0);
+$ob->prepare($obDoc);
+$obStream = fopen('php://temp', 'w+b');
+$obWritten = $ob->serializeStream($obDoc, $obStream);
+rewind($obStream);
+$obFromStream = $ob->deserializeStream($obStream);
+fclose($obStream);
+check('omnibuf stream round-trip', $obWritten > 10 && sameValue($obDoc, $obFromStream));
 
 exit($fail === 0 ? 0 : 1);
 

@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ColumnarV2Test {
   private static final String[] TYPES = {"table", "table_project", "nested_table", "signal"};
   private static final String ALLOW =
-      "arrow-ipc,parquet,parquet-uncompressed,orc,orc-uncompressed,sbe,jackson,protobuf,flatbuffers,avro";
+      "arrow-ipc,parquet,parquet-uncompressed,orc,orc-uncompressed,sbe,jackson,protobuf,omnibuf,flatbuffers,avro";
 
   @Test
   void deterministicAndDistinctSeeds() {
@@ -93,7 +93,7 @@ class ColumnarV2Test {
   @Test
   void filterAllowListPreservesRegistryOrder() {
     List<String> names = Registry.names();
-    assertEquals(30, names.size());
+    assertEquals(32, names.size());
     assertEquals(names, Main.selectSerializerNames(names, ""));
     List<String> jackson = Main.selectSerializerNames(names, "jackson");
     assertTrue(jackson.contains("jackson"));
@@ -106,6 +106,7 @@ class ColumnarV2Test {
         List.of(
             "jackson",
             "protobuf",
+            "omnibuf",
             "avro",
             "flatbuffers",
             "arrow-ipc",
@@ -129,6 +130,7 @@ class ColumnarV2Test {
             "sbe",
             "jackson",
             "protobuf",
+            "omnibuf",
             "flatbuffers",
             "avro");
     List<BenchSerializer> sers = Registry.byNames(names);

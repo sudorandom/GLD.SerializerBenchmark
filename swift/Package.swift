@@ -64,6 +64,7 @@ let package = Package(
         .package(url: "https://github.com/CoreOffice/XMLCoder.git", from: "0.17.0"),
         .package(url: "https://github.com/mongodb/swift-bson.git", from: "3.1.0"),
         .package(url: "https://github.com/apple/swift-protobuf.git", from: "1.28.0"),
+        .package(url: "https://github.com/omnibuf/omnibuf-swift.git", from: "0.1.4"),
         .package(url: "https://github.com/google/flatbuffers.git", exact: "24.3.25"),
         .package(url: "https://github.com/lynixliu/SwiftAvroCore.git", from: "2.0.0"),
         .package(url: "https://github.com/leo-gan/gld-avro-swift.git", from: "0.2.0"),
@@ -112,12 +113,22 @@ let package = Package(
                 .linkedLibrary("z"),
             ]
         ),
+        // Separate target avoids generated struct name collisions with SerializerBenchmarkCore domain types.
+        .target(
+            name: "OmniBufGen",
+            dependencies: [
+                .product(name: "OmniBuf", package: "omnibuf-swift"),
+            ],
+            path: "Sources/OmniBufGen"
+        ),
         .target(
             name: "SerializerBenchmarkCore",
             dependencies: [
                 .product(name: "Fory", package: "fory"),
                 "GzipC",
                 "CapnpBridge",
+                .product(name: "OmniBuf", package: "omnibuf-swift"),
+                "OmniBufGen",
                 .product(name: "IkigaJSON", package: "IkigaJSON"),
                 .product(name: "SwiftMsgpack", package: "swift-msgpack"),
                 .product(name: "SwiftCbor", package: "swift-cbor"),

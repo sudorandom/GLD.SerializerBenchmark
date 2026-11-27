@@ -32,6 +32,7 @@ func All() []BenchSerializer {
 		newPelletierTOML(),
 		// Schema / IDL
 		newGoogleProtobuf(),
+		newOmniBuf(),
 		newDagr(),
 		newDagrRegular(),
 		newDagrFrozen(),

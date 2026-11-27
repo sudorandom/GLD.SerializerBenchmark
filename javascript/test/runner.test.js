@@ -195,7 +195,7 @@ test('columnar fixtures are deterministic and repeat strings', () => {
 });
 
 const COLUMNAR_ALLOW =
-  'arrow-ipc,parquet,parquet-uncompressed,JSON.stringify,protobufjs,flatbuffers,avsc';
+  'arrow-ipc,parquet,parquet-uncompressed,JSON.stringify,protobufjs,omnibuf,flatbuffers,avsc';
 
 test('comma filter is exact and the columnar allow-list selects those names', () => {
   assert.equal(serializerSelected('anything', ''), true);
@@ -217,6 +217,7 @@ test('comma filter is exact and the columnar allow-list selects those names', ()
     'avsc',
     'protobufjs',
     'flatbuffers',
+    'omnibuf',
     'arrow-ipc',
     'parquet',
     'parquet-uncompressed',
@@ -451,4 +452,11 @@ test('dagr (all four node layouts) roundtrips all V2 types (single and batch) wi
       }
     }
   }
+});
+
+test('omnibuf is registered with a semver version', () => {
+  const ser = ALL_SERIALIZERS.find((s) => s.name === 'omnibuf');
+  assert.ok(ser, 'omnibuf registered');
+  assert.match(ser.version, /^\d+\.\d+\.\d+/);
+  assert.equal(ser.supports('graph'), false);
 });

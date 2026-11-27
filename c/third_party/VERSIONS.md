@@ -22,6 +22,7 @@
 | zcbor | main (Nordic) | CBOR structured API |
 | ion-c | v1.1.6 (git tag; 1.4.0's release archive still configures googletest when tests are off) | Ion binary (`ion-c`) |
 | gld-kiln-c | 0.2.0 | Kiln positional binary (`gld-kiln`) |
+| omnibuf-nano | v0.1.3 | OmniBuf C99 static-bound binary (`omnibuf-nano`) |
 
 Build artifacts live in `third_party/_build/` and `third_party/_prefix/` (gitignored).
 Run `c/scripts/fetch-and-build-deps.sh` to populate.

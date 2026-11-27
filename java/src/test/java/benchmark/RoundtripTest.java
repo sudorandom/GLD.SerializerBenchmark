@@ -5,6 +5,7 @@ import benchmark.model.v2.Generators;
 import benchmark.model.v2.TensorMatrix;
 import benchmark.serializers.BenchSerializer;
 import benchmark.serializers.KilnSer;
+import benchmark.serializers.OmniBufSer;
 import benchmark.serializers.Registry;
 import org.junit.jupiter.api.Test;
 
@@ -107,6 +108,26 @@ class RoundtripTest {
     assertTrue(Fidelity.check(same, ser.toDomain(decoded)));
     buf[12] ^= 1;
     assertFalse(Fidelity.check(same, decoded));
+  }
+
+  @Test
+  void omnibufMetadataAndBatchRoundtrip() throws Exception {
+    OmniBufSer ser = new OmniBufSer();
+    assertEquals("omnibuf", ser.name());
+    assertEquals("adapted", ser.streamMode());
+    assertEquals("message", ser.nativeKind());
+    assertFalse(ser.version().isBlank());
+    assertFalse("unknown".equals(ser.version()));
+    assertFalse(ser.supports("tensor"));
+    for (String type : FIXTURES) {
+      assertTrue(ser.supports(type), type);
+      List<Object> batch = Generators.instances(type, Map.of(), 42L, 100);
+      Fixture fx = new Fixture(type, batch);
+      ser.prepare(fx);
+      byte[] buf = ser.serializeBytes(fx);
+      Object out = ser.toDomain(ser.deserializeBytes(buf));
+      assertTrue(Fidelity.check(batch, out), "omnibuf batch " + type);
+    }
   }
 
   @Test

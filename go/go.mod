@@ -29,9 +29,11 @@ require (
 	github.com/klauspost/compress v1.20.3
 	github.com/leo-gan/gld-kiln-go v0.0.0-20261126213433-7c00dafddb27 // main c2c91fa; tag 0.2.0 has no v prefix
 	github.com/linkedin/goavro/v2 v2.15.0
+	github.com/omnibuf/omnibuf-go v0.2.13
 	github.com/pelletier/go-toml/v2 v2.4.3
 	github.com/segmentio/encoding v0.5.4
 	github.com/shamaton/msgpack/v3 v3.2.6
+	github.com/toon-format/toon-go v1.0.1
 	github.com/ugorji/go/codec v1.3.2
 	github.com/vmihailenco/msgpack/v5 v5.4.1
 	github.com/yutopp/go-amf0 v0.1.1
@@ -54,7 +56,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pierrec/lz4/v4 v4.1.29 // indirect
 	github.com/segmentio/asm v1.1.5 // indirect
-	github.com/toon-format/toon-go v1.0.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect

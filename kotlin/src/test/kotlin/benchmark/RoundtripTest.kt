@@ -2,7 +2,11 @@ package benchmark
 
 import benchmark.model.Fixture
 import benchmark.model.v2.Generators
+import benchmark.serializers.OmniBufSer
 import benchmark.serializers.Registry
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.nio.charset.StandardCharsets
@@ -17,6 +21,26 @@ class RoundtripTest {
     fun allSerializersRoundtripAllFixtures() {
         for (type in FIXTURES) {
             roundtripType(type)
+        }
+    }
+
+    @Test
+    fun omnibufMetadataAndBatchRoundtrip() {
+        val ser = OmniBufSer()
+        assertEquals("omnibuf", ser.name())
+        assertEquals("adapted", ser.streamMode())
+        assertEquals("message", ser.nativeKind())
+        assertFalse(ser.version().isBlank())
+        assertNotEquals("unknown", ser.version())
+        assertFalse(ser.supports("tensor"))
+        for (type in FIXTURES) {
+            assertTrue(ser.supports(type), type)
+            val batch = ArrayList(Generators.instances(type, emptyMap(), 42L, 100))
+            val fx = Fixture(type, batch)
+            ser.prepare(fx)
+            val buf = ser.serializeBytes(fx)
+            val out = ser.toDomain(ser.deserializeBytes(buf))
+            assertTrue(Fidelity.check(batch, out)) { "omnibuf batch $type" }
         }
     }
 

@@ -2,9 +2,9 @@
 
 Native C benchmark runner emitting timestamped `logs/c/YYYY-MM-DD-HHMMSS.csv` (nanoseconds, `Language=c`).
 
-## Serializers (21)
+## Serializers (26)
 
-See [docs/c/index.md](../docs/c/index.md) for the inventory (JSON / binary / schema), visitor domain layer (`v2_codec`), and caveats. Includes official Google **libprotobuf** (`protobuf` row) when the protobuf sysroot is present.
+See [docs/c/index.md](../docs/c/index.md) for the inventory (JSON / binary / schema), visitor domain layer (`v2_codec`), and caveats. Includes official Google **libprotobuf** (`protobuf` row) when the protobuf sysroot is present, and **omnibuf-nano** when vendored via `c/scripts/fetch-and-build-deps.sh`.
 
 ## Test data
 

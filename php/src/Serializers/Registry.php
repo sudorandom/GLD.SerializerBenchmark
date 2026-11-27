@@ -16,6 +16,7 @@ final class Registry
             new MsgpackPeclSer(),
             new MsgpackSer(),
             new ProtobufSer(),
+            new OmniBufSer(),
             new SymfonyJsonSer(),
             new SymfonyXmlSer(),
             new JmsJsonSer(),
